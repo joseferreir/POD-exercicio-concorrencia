@@ -11,7 +11,7 @@ package br.edu.ifpb.pod.atividade.service;
  */
 public class Sequencia {
 
-    private static  int  seq;
+    private static volatile int seq= 1;
 
      public static int getSeq() {
 
