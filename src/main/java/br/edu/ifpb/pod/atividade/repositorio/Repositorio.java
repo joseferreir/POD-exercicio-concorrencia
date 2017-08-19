@@ -11,7 +11,9 @@ package br.edu.ifpb.pod.atividade.repositorio;
  */
 public interface Repositorio<T> {
 
-    public boolean add(T obj);
+    public void add(T obj);
 
     public T find(int id);
+
+    public boolean isdadosrepitidos();
 }

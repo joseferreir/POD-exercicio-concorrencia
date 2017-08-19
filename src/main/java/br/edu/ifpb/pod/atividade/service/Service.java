@@ -9,7 +9,6 @@ import br.edu.ifpb.pod.atividade.entyty.Dados;
 import br.edu.ifpb.pod.atividade.repositorio.Repositorio;
 import br.edu.ifpb.pod.atividade.repositorio.RepositorioDados;
 
-
 /**
  *
  * @author jose2
@@ -19,22 +18,30 @@ public class Service implements Runnable {
     private String who;
     private long createD__in;
     private int fim;
+    private Repositorio repositorio = new RepositorioDados();
 
-    public Service( String who, long createD__in, int fim) {
+    public Service() {
+    }
+    
+
+    public Service(String who, long createD__in, int fim) {
         this.who = who;
         this.createD__in = createD__in;
         this.fim = fim;
     }
-    
 
     @Override
     public void run() {
 
         Repositorio repositorio = new RepositorioDados();
         for (int i = 0; i < fim; i++) {
-             repositorio.add(new Dados(Sequencia.getSeq(), who, createD__in));
-            
+            repositorio.add(new Dados(Sequencia.getSeq(), who, createD__in));
+
         }
-       
+
+    }
+
+    public boolean isdadosrepitidos() {
+        return repositorio.isdadosrepitidos();
     }
 }

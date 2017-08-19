@@ -5,10 +5,10 @@
  */
 package br.edu.ifpb.pod.atividade.repositorio;
 
-
 import br.edu.ifpb.pod.atividade.entyty.Dados;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,33 +23,62 @@ public class RepositorioDados implements Repositorio<Dados> {
     private final String host = "url=jdbc:postgresql://localhost:5432/pod-rmi";
 
     @Override
-    public boolean add(Dados obj) {
+    public void add(Dados obj) {
         try {
-            boolean result = false;
+           
             String query = "INSERT INTO  TB_DADOS(id,who, CREATED__IN ) VALUES(?,?,?)";
             this.conn = ConnectionFactory.of(host).getConnection();
             PreparedStatement stat = conn.prepareStatement(query);
             stat.setInt(1, obj.getID());
-             stat.setString(2, obj.getWHO());
-              stat.setLong(3, obj.getCREATED__IN());
-           
-            if (stat.executeUpdate() > 0) {
-                
+            stat.setString(2, obj.getWHO());
+            stat.setLong(3, obj.getCREATED__IN());
 
-                result = true;
+            if (stat.executeUpdate() > 0) {
+
+                
             }
             conn.close();
-            return result;
+            
         } catch (SQLException ex) {
             Logger.getLogger(RepositorioDados.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-           
-        return false;
+        }
     }
 
     @Override
     public Dados find(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public boolean isdadosrepitidos() {
+        try {
+            boolean result = false;
+            String query = "SELECT ID, COUNT( id ) n FROM TB_DADOS\n"
+                    + "GROUP BY ID\n"
+                    + "ORDER BY n DESC \n"
+                    + "LIMIT 2";
+            this.conn = ConnectionFactory.of(host).getConnection();
+            PreparedStatement stat = conn.prepareStatement(query);
+            ResultSet rs = stat.executeQuery();
+            while(rs.next()){
+            if (rs.getInt("n")>1) {
+
+                result = true;
+                break;
+            }
+            }
+            conn.close();
+            return result;
+        } catch (SQLException ex) {
+            Logger.getLogger(RepositorioDados.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return false;
+    }
+
+        
+
+    
+
 
 }
